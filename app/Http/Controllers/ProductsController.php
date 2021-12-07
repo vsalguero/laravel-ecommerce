@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Product;
 
 class ProductsController extends Controller
 {
+    public function __constructor(){
+        $this->middleware('auth', ['except' => ['index','show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,6 +18,9 @@ class ProductsController extends Controller
     public function index()
     {
         //Muestra una colección de los productos
+        $products = Product::paginate(15);
+        return view('products.index', ['products' => $products]);
+        
     }
 
     /**
@@ -24,7 +31,8 @@ class ProductsController extends Controller
     public function create()
     {
         //Muestra el diseño de un formulario para crear un registro
-        return view('products.create');
+        $product = new Product();
+        return view('products.create', ["product" => $product]);
     }
 
     /**
@@ -36,6 +44,18 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         //Almacena los datos en la base de datos
+        $options = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'price' => $request->price
+            //'image_url' => $request->image_url
+        ];
+        if(Product::create($options)){
+          return redirect('/products');
+        }else{
+            return view('products.create'   );
+
+        }
     }
 
     /**
@@ -47,6 +67,9 @@ class ProductsController extends Controller
     public function show($id)
     {
         //Muestra un solo registro
+        $product = Product::find($id);
+
+        return view('products.show', ['product' => $product]);
     }
 
     /**
@@ -58,6 +81,8 @@ class ProductsController extends Controller
     public function edit($id)
     {
         //Muestra un formulario para editar un registro
+        $product = Product::find($id);
+        return view('products.edit', ["product" => $product]);
     }
 
     /**
@@ -70,6 +95,17 @@ class ProductsController extends Controller
     public function update(Request $request, $id)
     {
         //Acción para actualizar un registro
+        $product = Product::find($id);
+
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->price = $request->price;
+
+        if($product->save()){
+            return redirect('/products');
+        }else{
+            return view('products.edit', ["product" => $product]);
+        }
     }
 
     /**
@@ -81,5 +117,7 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         //Eliminar un registro especificado
+        Product::destroy($id);
+        return redirect('/products');
     }
 }
