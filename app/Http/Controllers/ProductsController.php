@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\Http\Resources\ProductsCollection;
 
 class ProductsController extends Controller
 {
@@ -15,10 +16,15 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //Muestra una colección de los productos
         $products = Product::paginate(15);
+
+        if($request->wantsJson()){
+            return new ProductsCollection($products);
+        }
+
         return view('products.index', ['products' => $products]);
         
     }
