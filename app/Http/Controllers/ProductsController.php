@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\ShoppingCart;
 use App\Http\Resources\ProductsCollection;
 
 class ProductsController extends Controller
@@ -18,6 +19,12 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
+        $sessionName = 'shopping_card_id';
+        $shopping_card_id = $request->session()->get($sessionName);
+        
+        $shopping_cart = ShoppingCart::findOrCreateById($shopping_card_id);
+        $request->session()->put($sessionName, $shopping_cart->id)
+
         //Muestra una colección de los productos
         $products = Product::paginate(15);
 
