@@ -11,13 +11,7 @@
                     <h2>Mi carrito de compras</h2>
                 </header>
                 <div class="card-body padding">
-                   @foreach ($shopping_cart->products as $product)
-                   <div class="">
-                    <h4>{{$product->title}}</h4>
-
-                   </div>
-                       
-                   @endforeach
+                   <products-shopping-component></products-shopping-component>
                 </div>        
             </div>
         </div>

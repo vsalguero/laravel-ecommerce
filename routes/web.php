@@ -26,3 +26,4 @@ Route::resource("in_shopping_carts", "ProductInShoppingCartsController",[
 ]);
 
 Route::get('/carrito', 'ShoppingCartController@show')->name('shopping_cart.show');
+Route::get('/carrito/products', 'ShoppingCartController@products')->name('shopping_cart.products');
