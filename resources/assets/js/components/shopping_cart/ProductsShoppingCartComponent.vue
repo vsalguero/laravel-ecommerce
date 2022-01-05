@@ -1,7 +1,7 @@
 <template>
 <div>
 <material-transition-group tag="div"
-    <article class="" :key="product.id" :data-index="index" v-for="(product, index) in products">
+    <article class="card-product" :key="product.id" :data-index="index" v-for="(product, index) in products">
         <div class="row">
             <div class="col-10">
                 <strong>{{ product.title }}</strong>
@@ -9,6 +9,17 @@
             </div>
             <div class="col-2">
                 <strong>{{ product.humanPrice }}</strong>                
+            </div>
+        </div>
+    </article>
+    <article class="total card-product">
+    <div class="row">
+            <div class="col-10">
+                <strong>Total</strong>
+                
+            </div>
+            <div class="col-2">
+                <strong>{{ total }}</strong>                
             </div>
         </div>
     </article>
@@ -26,6 +37,15 @@ export default {
     },
     created(){
          this.fetchProducts();
+    },
+    computed: {
+        total(){
+            let cents = this.products.reduce((a,b) => {
+                return a + b.numberPrice
+            },0);
+
+            return  `$${cents/100}`;
+        }
     },
     methods:{
         fetchProducts(){
