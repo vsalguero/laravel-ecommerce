@@ -5,10 +5,10 @@ use URL;
 use Config;
 
 use PayPal\Core\PayPalHttpClient;
-use PayPal\v1\Payments\PaymentsCreateRequest;
-use PayPal\v1\Payments\PaymentsExecuteRequest;
+use PayPal\v1\Payments\PaymentCreateRequest;
+use PayPal\v1\Payments\PaymentExecuteRequest;
 
-use PayPal\Core\ProductionEnvironment;
+use PayPal\Core\SandboxEnvironment; //ProductionEnvironment;
 
 Class PayPal{
     public $client, $environment;
@@ -37,8 +37,8 @@ Class PayPal{
                "payment_method" => "paypal",
            ],
            "redirect_urls" => [
-               "cancel_url" => "/",
-               "return_url" => "/"
+               "cancel_url" => URL::route('shopping_cart.show'),
+               "return_url" => URL::route('payments.execute'),
            ]
         ];
 
@@ -48,7 +48,16 @@ Class PayPal{
     }
 
     public function charge($amount){
-        $this->client->execute($this->buildPaymentRequest($amount));
+        return $this->client->execute($this->buildPaymentRequest($amount));
+    }
+
+    public function execute($paymentId, $payerId){
+        $paymentExecute = new PaymentExecuteRequest($paymentId);
+        $paymentExecute->body = [
+            "payer_id" => $payerId
+        ];
+
+        return $this->client->execute($paymentExecute);
     }
 }
 

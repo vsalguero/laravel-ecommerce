@@ -7,6 +7,7 @@ use App\Product;
 use App\ShoppingCart;
 use App\Http\Resources\ProductsCollection;
 
+
 class ProductsController extends Controller
 {
     public function __constructor(){
@@ -20,6 +21,8 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         //Muestra una colección de los productos
+
+
         $products = Product::paginate(15);
 
         if($request->wantsJson()){
